@@ -1,6 +1,7 @@
 #!/bin/sh
 #!/usr/bin/python3
 
+#My first attempt at bash scripting.
 #This installation script is for setting up a new Pop!_OS installation according to my needs.
 cd
 clear
@@ -27,5 +28,14 @@ pip_packages="discord.py[voice]"
 python3 -m pip install -U "$pip_packages"
 
 
-
+#Notes:
 #input is taken with "read foo"
+
+#Todo:
+#install flatpak softwares I use
+#change mount points of attached drives to identify by label
+#create symlinks for folders on Koi drive to home
+#set refresh rates of monitors to highest
+#enable Japanese keyboard
+#add custom keyboard shortcuts (printscrn for "flameshot gui")
+#change sleep time of device
