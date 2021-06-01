@@ -3,10 +3,27 @@
 
 #My first attempt at bash scripting.
 #This installation script is for setting up a new Pop!_OS installation according to my needs.
+
 cd
 clear
-
 sudo apt update && sudo apt upgrade -y && flatpak update -y
+
+################## install software
+# "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
+sudo -u $SUDO_USER flatpak install flathub com.discordapp.Discord -y
+sudo -u $SUDO_USER flatpak install flathub com.spotify.Client -y
+sudo -u $SUDO_USER flatpak install flathub com.visualstudio.code -y
+sudo -u $SUDO_USER flatpak install flathub org.deluge_torrent.deluge -y
+sudo -u $SUDO_USER flatpak install flathub org.kde.kdenlive -y
+sudo -u $SUDO_USER flatpak install flathub org.kde.krita -y
+sudo -u $SUDO_USER flatpak install flathub org.gnome.Boxes -y
+sudo -u $SUDO_USER flatpak install flathub us.zoom.Zoom -y
+sudo -u $SUDO_USER flatpak install flathub org.videolan.VLC -y
+sudo -u $SUDO_USER flatpak install flathub com.obsproject.Studio -y
+sudo -u $SUDO_USER flatpak install flathub com.mojang.Minecraft -y
+sudo -u $SUDO_USER flatpak install flathub org.darktable.Darktable -y
+sudo -u $SUDO_USER flatpak install flathub com.rawtherapee.RawTherapee -y
+
 
 # WARNING: this will overwrite any existing .bash_aliases file!
 echo "alias upup='sudo apt update && sudo apt upgrade -y && flatpak update -y'" > .bash_aliases
