@@ -35,9 +35,9 @@ python3 -m pip install -U "$pip_packages"
 
 ################## customizations ################## 
 # WARNING: this will overwrite any existing .bash_aliases file!
-echo "alias upup='sudo apt update && sudo apt upgrade -y && flatpak update -y'" > .bash_aliases
-echo "alias minecraft='clear && cd ~/Minecraft\ Server/ && ./start.sh'" >> .bash_aliases
-echo "alias botbot='clear && cd ~/Gits/BotBot/ && python3 bot.py'" >> .bash_aliases
+sudo echo "alias upup='sudo apt update && sudo apt upgrade -y && flatpak update -y'" > .bash_aliases
+sudo echo "alias minecraft='clear && cd ~/Minecraft\ Server/ && ./start.sh'" >> .bash_aliases
+sudo echo "alias botbot='clear && cd ~/Gits/BotBot/ && python3 bot.py'" >> .bash_aliases
 
 source .bash_aliases #load aliases file to be used immediately
 
@@ -48,6 +48,9 @@ sudo hostnamectl set-hostname --static $device_name
 # sudo sed "s/pop-os/$device_name/" /etc/hosts
 
 gsettings set org.gnome.desktop.session idle-delay 720 #set screen off time to 12 minutes
+gsettings set org.gnome.desktop.interface clock-show-weekday true
+gsettings set org.gnome.desktop.interface clock-show-seconds true
+gsettings set org.gnome.desktop.calendar show-weekdate true
 # ACTION="flameshot gui"
 # KEY="PrintSc"
 # gsettings set org.gnome.desktop.wm.keybindings $KEY $ACTION
