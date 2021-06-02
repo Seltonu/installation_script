@@ -5,30 +5,41 @@
 
 cd
 clear
+echo "Enter name for device "
+read device_name
+
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y
 
 # ################## install software ################## 
 sudo add-apt-repository -y ppa:papirus/papirus 
 sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
 sudo add-apt-repository -y ppa:boltgolt/howdy #howdy needs to manually installed/set up
-sudo apt install -y lutris steam flameshot papirus-icon-theme papirus-folders sysmontask ffmpeg
+sudo apt install -y \
+lutris \
+steam \
+flameshot \
+papirus-icon-theme \
+papirus-folders \
+sysmontask \
+ffmpeg
 
 
 # # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
-flatpak install flathub com.discordapp.Discord -y
-flatpak install flathub com.spotify.Client -y
-flatpak install flathub com.visualstudio.code -y
-flatpak install flathub org.deluge_torrent.deluge -y
-flatpak install flathub org.kde.kdenlive -y
-flatpak install flathub org.kde.krita -y
-flatpak install flathub org.gnome.Boxes -y
-flatpak install flathub us.zoom.Zoom -y
-flatpak install flathub org.videolan.VLC -y
-flatpak install flathub com.obsproject.Studio -y
-flatpak install flathub com.mojang.Minecraft -y
-flatpak install flathub org.darktable.Darktable -y
-flatpak install flathub com.rawtherapee.RawTherapee -y
-
+flatpak install flathub -y com.discordapp.Discord 
+flatpak install flathub -y com.spotify.Client 
+flatpak install flathub -y com.visualstudio.code 
+flatpak install flathub -y org.deluge_torrent.deluge 
+flatpak install flathub -y org.kde.kdenlive 
+flatpak install flathub -y org.kde.krita 
+flatpak install flathub -y org.gnome.Boxes 
+flatpak install flathub -y us.zoom.Zoom 
+flatpak install flathub -y org.videolan.VLC 
+flatpak install flathub -y com.obsproject.Studio 
+flatpak install flathub -y com.mojang.Minecraft 
+flatpak install flathub -y org.darktable.Darktable 
+flatpak install flathub -y com.rawtherapee.RawTherapee 
+flatpak install flathub -y org.gnome.Cheese 
+flatpak install flathub -y com.github.tchx84.Flatseal
 
 #add pip modules
 sudo apt install python3-pip -y
@@ -50,7 +61,7 @@ echo "alias yt-audio=\"youtube-dl --ignore-errors --verbose --extract-audio --au
 source .bash_aliases #load aliases file to be used immediately
 
 #Change device name
-device_name="box"
+# device_name="box"
 sudo hostnamectl set-hostname --static $device_name
 
 gsettings set org.gnome.desktop.session idle-delay 720 #set screen off time to 12 minutes
