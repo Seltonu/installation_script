@@ -11,7 +11,7 @@ sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak upda
 sudo add-apt-repository -y ppa:papirus/papirus 
 sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
 sudo add-apt-repository -y ppa:boltgolt/howdy #howdy needs to manually installed/set up
-sudo apt install -y lutris steam flameshot papirus-icon-theme papirus-folders sysmontask
+sudo apt install -y lutris steam flameshot papirus-icon-theme papirus-folders sysmontask ffmpeg
 
 
 # # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
