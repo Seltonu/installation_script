@@ -8,8 +8,11 @@ clear
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y
 
 # ################## install software ################## 
-sudo apt install -y lutris steam flameshot
-flameshot config --autostart true --trayicon false --maincolor \#4287f5
+sudo add-apt-repository -y ppa:papirus/papirus 
+sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
+sudo add-apt-repository -y ppa:boltgolt/howdy #howdy needs to manually installed/set up
+sudo apt install -y lutris steam flameshot papirus-icon-theme papirus-folders sysmontask
+
 
 # # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
 flatpak install flathub com.discordapp.Discord -y
@@ -50,17 +53,20 @@ source .bash_aliases #load aliases file to be used immediately
 device_name="box"
 sudo hostnamectl set-hostname --static $device_name
 
-printf "Updating gsettings"
 gsettings set org.gnome.desktop.session idle-delay 720 #set screen off time to 12 minutes
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 gsettings set org.gnome.desktop.calendar show-weekdate true
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
+gsettings set org.gnome.desktop.wm.preferences button-layout 'menu:minimize,maximize,close'
+gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
 
 
 git config --global user.name "Steven Gutierrez"
 git config --global user.email "steven.s.gutier@gmail.com"
 
+papirus-folders -C paleorange
+flameshot config --autostart true --trayicon false --maincolor \#4287f5
 
 printf "\nSettings updated.\n"
 
@@ -71,6 +77,4 @@ printf "\nSettings updated.\n"
 #change mount points of attached drives to identify by label
 #create symlinks for folders on Koi drive to home
 #set refresh rates of monitors to highest
-#enable Japanese keyboard
 #add custom keyboard shortcuts (printscrn for "flameshot gui")
-#change sleep time of device
