@@ -29,6 +29,8 @@ flatpak install flathub com.mojang.Minecraft -y
 flatpak install flathub org.darktable.Darktable -y
 flatpak install flathub com.rawtherapee.RawTherapee -y
 
+firefox "lutris:league-of-legends-standard-launch-help"
+
 
 #add pip modules
 sudo apt install python3-pip -y
