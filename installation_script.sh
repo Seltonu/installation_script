@@ -21,7 +21,8 @@ flameshot \
 papirus-icon-theme \
 papirus-folders \
 sysmontask \
-ffmpeg
+ffmpeg \
+neofetch
 
 
 # # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
@@ -40,6 +41,7 @@ flatpak install flathub -y org.darktable.Darktable
 flatpak install flathub -y com.rawtherapee.RawTherapee 
 flatpak install flathub -y org.gnome.Cheese 
 flatpak install flathub -y com.github.tchx84.Flatseal
+flatpak install flathub org.pulseaudio.pavucontrol
 
 firefox "lutris:league-of-legends-standard-launch-help"
 
@@ -80,6 +82,8 @@ git config --global user.email "steven.s.gutier@gmail.com"
 
 papirus-folders -C paleorange
 flameshot config --autostart true --trayicon false --maincolor \#4287f5
+#~/.config/flameshot/flameshot.ini
+#config file still needs modification to avoid notification popup. No CLI config available.
 
 printf "\nSettings updated.\n"
 
@@ -91,3 +95,4 @@ printf "\nSettings updated.\n"
 #create symlinks for folders on Koi drive to home
 #set refresh rates of monitors to highest
 #add custom keyboard shortcuts (printscrn for "flameshot gui")
+#add try catch for adding PPAs (prevents breakage on OS version update)
