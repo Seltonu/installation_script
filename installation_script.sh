@@ -1,57 +1,80 @@
-#!/bin/sh
+#!/bin/bash
 #!/usr/bin/python3
 
 #This installation script is for setting up a new Pop!_OS installation according to my needs.
 
 cd
 clear
-echo "Enter name for device "
+echo "Enter name for device"
 read device_name
+echo "Setup unattended? y/n"
+read unattended
+start=$SECONDS
 
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y
 
 # ################## install software ################## 
-sudo add-apt-repository -y ppa:papirus/papirus 
-sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
-sudo add-apt-repository -y ppa:boltgolt/howdy #howdy needs to manually installed/set up
-sudo apt install -y \
-lutris \
+
+#add PPAs for software I use, first checking if PPA already installed
+if (! ls /etc/apt/sources.list.d | grep -q papirus)
+then
+    sudo add-apt-repository -y ppa:papirus/papirus
+else
+    printf "Papirus PPA already installed.\n"
+fi
+if (! ls /etc/apt/sources.list.d | grep -q sysmontask)
+then
+    sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
+else
+    printf "Sysmontask PPA already installed.\n"
+fi
+if (! ls /etc/apt/sources.list.d | grep -q howdy)
+then
+    sudo add-apt-repository -y ppa:boltgolt/howdy
+else
+    printf "Howdy PPA already installed.\n"
+fi
+
+
+sudo apt install -y --ignore-missing \
 steam \
+lutris \
 flameshot \
 papirus-icon-theme \
 papirus-folders \
 sysmontask \
 ffmpeg \
-neofetch
+neofetch \
+xclip \
+ibus-mozc
 
 
 # # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
-flatpak install flathub -y com.discordapp.Discord 
-flatpak install flathub -y com.spotify.Client 
-flatpak install flathub -y com.visualstudio.code 
-flatpak install flathub -y org.deluge_torrent.deluge 
-flatpak install flathub -y org.kde.kdenlive 
-flatpak install flathub -y org.kde.krita 
-flatpak install flathub -y org.gnome.Boxes 
-flatpak install flathub -y us.zoom.Zoom 
-flatpak install flathub -y org.videolan.VLC 
-flatpak install flathub -y com.obsproject.Studio 
-flatpak install flathub -y com.mojang.Minecraft 
-flatpak install flathub -y org.darktable.Darktable 
-flatpak install flathub -y com.rawtherapee.RawTherapee 
-flatpak install flathub -y org.gnome.Cheese 
-flatpak install flathub -y com.github.tchx84.Flatseal
-flatpak install flathub org.pulseaudio.pavucontrol
+flatpak install flathub -y \
+com.discordapp.Discord \
+com.spotify.Client \
+com.visualstudio.code \
+org.deluge_torrent.deluge \
+org.kde.kdenlive \
+org.kde.krita \
+org.gnome.Boxes \
+us.zoom.Zoom \
+org.videolan.VLC \
+com.obsproject.Studio \
+com.mojang.Minecraft \
+org.darktable.Darktable \
+com.rawtherapee.RawTherapee \
+org.gnome.Cheese \
+com.github.tchx84.Flatseal \
+org.pulseaudio.pavucontrol
 
-firefox "lutris:league-of-legends-standard-launch-help"
+firefox "lutris:league-of-legends-standard-launch-help" & disown
+firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free_password_manager-1.51.1-an+fx.xpi & disown
 
 #add pip modules
 sudo apt install python3-pip -y
 pip_packages='discord.py[voice] youtube-dl'
 sudo python3 -m pip install -U $pip_packages
-
-
-
 
 
 ################## customizations ################## 
@@ -85,7 +108,36 @@ flameshot config --autostart true --trayicon false --maincolor \#4287f5
 #~/.config/flameshot/flameshot.ini
 #config file still needs modification to avoid notification popup. No CLI config available.
 
+#### Favorite Apps
+gsettings set org.gnome.shell favorite-apps "['pop-cosmic-launcher.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop', 'com.discordapp.Discord.desktop', 'com.spotify.Client.desktop', 'steam.desktop', 'com.visualstudio.code.desktop', 'pop-cosmic-applications.desktop']"
+
+
+
 printf "\nSettings updated.\n"
+
+############## SSH KEY SETUP ##############
+if [[ $unattended != y* ]]
+then
+    echo "Generate SSH key? y/n"
+    read generate_ssh_bool
+fi
+
+if [[ $generate_ssh_bool = y* || $unattended = y* ]]
+then
+    printf "\n Generating SSH key...\n"
+    ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/github_key
+    xclip -selection clipboard < ~/.ssh/github_key.pub
+    printf "\nSSH Pub Key copied to clipboard.\n"
+else
+    printf "Skipping SSH key.\n"
+fi
+
+duration=( $SECONDS - start )
+printf "Setup complete. Runtime $duration seconds\n"
+
+
 
 #Notes:
 #input is taken with "read foo"
