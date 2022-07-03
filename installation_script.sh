@@ -131,7 +131,10 @@ fi
 if [[ $generate_ssh_bool = y* || $unattended = y* ]]
 then
     printf "\n Generating SSH key...\n"
-    ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
+    # -N for empty passphrase, -C for comment
+    generation_date=`date +%b``date +%Y`
+    ssh-keygen -t ed25519 -N "" -f ~/.ssh/"$generation_date" -C "steven.s.gutier@gmail.com"
+    # ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
     eval "$(ssh-agent -s)"
     ssh-add ~/.ssh/github_key
     # No longer installing xclip
