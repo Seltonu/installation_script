@@ -72,8 +72,8 @@ org.gnome.Cheese \
 com.github.tchx84.Flatseal \
 org.pulseaudio.pavucontrol
 
-firefox "lutris:league-of-legends-standard-launch-help" & disown
-firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free_password_manager-1.51.1-an+fx.xpi & disown
+# firefox "lutris:league-of-legends-standard-launch-help" & disown
+# firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free_password_manager-1.51.1-an+fx.xpi & disown
 
 #add pip modules
 # development on discord bot has currently ceased, libraries not needed.
@@ -84,7 +84,7 @@ firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free
 
 ################## customizations ################## 
 # WARNING: this will overwrite any existing .bash_aliases file!
-echo "alias upup='sudo apt update && sudo apt upgrade -y && flatpak update -y'" | sudo tee ~/.bash_aliases
+echo "alias upup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove && flatpak update -y'" | sudo tee ~/.bash_aliases
 # echo "alias minecraft='clear && cd ~/Minecraft\ Server/ && ./start.sh'" | sudo tee -a ~/.bash_aliases # No longer hosted on this machine.
 # echo "alias botbot='clear && cd ~/Gits/BotBot/ && python3 bot.py'" | sudo tee -a ~/.bash_aliases # No longer hosted on this machine.
 # echo "alias yt-video=\"youtube-dl --ignore-errors --verbose -f 'bestvideo+bestaudio' --output '%(title)s.%(ext)s'\"" | sudo tee -a ~/.bash_aliases
@@ -100,7 +100,7 @@ gsettings set org.gnome.desktop.session idle-delay 900 #set screen off time to 1
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 gsettings set org.gnome.desktop.calendar show-weekdate true
-gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
+# gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
 
@@ -132,8 +132,8 @@ if [[ $generate_ssh_bool = y* || $unattended = y* ]]
 then
     printf "\n Generating SSH key...\n"
     # -N for empty passphrase, -C for comment
-    generation_date=`date +%b``date +%Y`
-    ssh-keygen -t ed25519 -N "" -f ~/.ssh/"$generation_date" -C "steven.s.gutier@gmail.com"
+    generation_date=`date +%b ``date +%Y`
+    ssh-keygen -t ed25519 -N "" -f ~/.ssh/"${device_name}_${generation_date}" -C "steven.s.gutier@gmail.com"
     # ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
     eval "$(ssh-agent -s)"
     ssh-add ~/.ssh/github_key
