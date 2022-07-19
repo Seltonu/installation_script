@@ -15,6 +15,7 @@ sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak upda
 
 # ################## install software ################## 
 
+#PAPIRUS ICONS
 #add PPAs for software I use, first checking if PPA already installed
 if (! ls /etc/apt/sources.list.d | grep -q papirus)
 then
@@ -22,12 +23,16 @@ then
 else
     printf "Papirus PPA already installed.\n"
 fi
+
+#SYSMONTASK
 # if (! ls /etc/apt/sources.list.d | grep -q sysmontask)
 # then
 #     sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
 # else
 #     printf "Sysmontask PPA already installed.\n"
 # fi
+
+#HOWDY
 # No longer want howdy currently.
 # if (! ls /etc/apt/sources.list.d | grep -q howdy)
 # then
@@ -43,26 +48,22 @@ lutris \
 flameshot \
 papirus-icon-theme \
 papirus-folders \
-# sysmontask \
 ffmpeg \
 neofetch \
-# xclip \
 ibus-mozc \
 code
+# sysmontask \
+# xclip \
 
 
-# # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation
+# OBSOLETE: # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation if script was run as sudo
 flatpak install flathub -y \
 com.discordapp.Discord \
 com.spotify.Client \
-# com.visualstudio.code \ # No longer want flatpak, use official deb.
-# org.deluge_torrent.deluge \
 org.kde.kdenlive \
 org.kde.krita \
 org.gnome.Boxes \
-# us.zoom.Zoom \ # No longer used.
 com.slack.Slack \
-# org.videolan.VLC \ # Use mpv instead
 io.mpv.Mpv \
 com.obsproject.Studio \
 com.mojang.Minecraft \
@@ -71,6 +72,10 @@ com.rawtherapee.RawTherapee \
 org.gnome.Cheese \
 com.github.tchx84.Flatseal \
 org.pulseaudio.pavucontrol
+# com.visualstudio.code \ # No longer want flatpak, use official deb.
+# org.deluge_torrent.deluge \
+# us.zoom.Zoom \ # No longer used.
+# org.videolan.VLC \ # Use mpv instead
 
 # firefox "lutris:league-of-legends-standard-launch-help" & disown
 # firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free_password_manager-1.51.1-an+fx.xpi & disown
@@ -100,7 +105,7 @@ gsettings set org.gnome.desktop.session idle-delay 900 #set screen off time to 1
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 gsettings set org.gnome.desktop.calendar show-weekdate true
-# gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
+gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
 
