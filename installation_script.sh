@@ -141,7 +141,7 @@ then
     ssh-keygen -t ed25519 -N "" -f ~/.ssh/"${device_name}_${generation_date}" -C "steven.s.gutier@gmail.com"
     # ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
     eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/github_key
+    ssh-add ~/.ssh/"${device_name}_${generation_date}"
     # No longer installing xclip
     # xclip -selection clipboard < ~/.ssh/github_key.pub 
     # printf "\nSSH Pub Key copied to clipboard.\n"
