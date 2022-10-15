@@ -51,7 +51,8 @@ papirus-folders \
 ffmpeg \
 neofetch \
 ibus-mozc \
-code
+code \
+lm-sensors
 # sysmontask \
 # xclip \
 
@@ -71,7 +72,8 @@ org.darktable.Darktable \
 com.rawtherapee.RawTherapee \
 org.gnome.Cheese \
 com.github.tchx84.Flatseal \
-org.pulseaudio.pavucontrol
+org.pulseaudio.pavucontrol \
+org.chromium.Chromium
 # com.visualstudio.code \ # No longer want flatpak, use official deb.
 # org.deluge_torrent.deluge \
 # us.zoom.Zoom \ # No longer used.
