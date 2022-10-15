@@ -7,10 +7,18 @@
 // - modify it via the UI (e.g. via about:config in the browser); or
 // - set it within a user.js file in your profile.
 
+
+
 // NOTE TO SELF:
 // setting default zoom to 133% is not possible through about:config values as it's stored in a database
 // may be easier to just automate this change somehow rather than copy over the database file for one config
 // or just auto-open a tab for about:preferences because it takes 2 seconds to flip manually
+
+//  The user.js should be stored in the Firefox profile folder, located in
+//      ~/.mozilla/firefox/<rand_string>.default-release/
+
+
+
 
 // ########################################
 // [EXPERIMENTAL] PERFORMANCE OPTIMIZATIONS
