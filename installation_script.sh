@@ -73,7 +73,9 @@ com.rawtherapee.RawTherapee \
 org.gnome.Cheese \
 com.github.tchx84.Flatseal \
 org.pulseaudio.pavucontrol \
-org.chromium.Chromium
+org.chromium.Chromium \
+io.github.aandrew_me.ytdn \
+org.gnome.gitlab.YaLTeR.Identity
 # com.visualstudio.code \ # No longer want flatpak, use official deb.
 # org.deluge_torrent.deluge \
 # us.zoom.Zoom \ # No longer used.
@@ -165,3 +167,4 @@ printf "Setup complete. Runtime $duration seconds\n"
 #set refresh rates of monitors to highest
 #add custom keyboard shortcuts (printscrn for "flameshot gui")
 #add try catch for adding PPAs (prevents breakage on OS version update)
+#gnome files/nautilus preferences, always show thumbnails, set all performance options to All 
