@@ -3,45 +3,86 @@
 
 #This installation script is for setting up a new Pop!_OS installation according to my needs.
 
-cd
-clear
-echo "Enter name for device"
-read device_name
-echo "Setup unattended? y/n"
-read unattended
-start=$SECONDS
+git_name="Steven Gutierrez"
+git_email="steven.s.gutier@gmail.com"
 
-sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y
 
-# ################## install software ################## 
+# -------------------------- Startup -------------------------- 
 
-#PAPIRUS ICONS
-#add PPAs for software I use, first checking if PPA already installed
-if (! ls /etc/apt/sources.list.d | grep -q papirus)
-then
-    sudo add-apt-repository -y ppa:papirus/papirus
+echo "-------------------------- SETUP SCRIPT --------------------------"
+
+if [[ $EUID -eq 0 ]]; then
+   echo "This script must be run as a normal user, not root." 
+   exit 1
 else
-    printf "Papirus PPA already installed.\n"
+    echo "Please enter root password to make system changes"
+    sudo -v #prompt for sudo password
 fi
 
-#SYSMONTASK
-# if (! ls /etc/apt/sources.list.d | grep -q sysmontask)
-# then
-#     sudo add-apt-repository -y ppa:camel-neeraj/sysmontask
-# else
-#     printf "Sysmontask PPA already installed.\n"
-# fi
+#Change device name
+read -p "Enter name for device: " device_name
+sudo hostnamectl set-hostname --static $device_name
 
-#HOWDY
-# No longer want howdy currently.
-# if (! ls /etc/apt/sources.list.d | grep -q howdy)
-# then
-#     sudo add-apt-repository -y ppa:boltgolt/howdy
-# else
-#     printf "Howdy PPA already installed.\n"
-# fi
+read -p "Generate SSH key? y/n " generate_ssh
+
+echo "Do you want to configure SMB directories?"
+read -p "WARNING: Symlink will FORCE OVERWRITE user home folders. (y/n): " configure_directories
+if [[ "$configure_directories" == "y" || "$configure_directories" == "Y" ]]; then
+    read -p "Enter your SMB username: " smb_username
+    read -s -p "Enter your SMB password: " smb_password
+    echo  # Add a newline after password input for readability
+fi
+
+echo "--------------------------"
+start=$SECONDS
+
+error_messages=""
+sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y
 
 
+# -------------------------- Configure Home Directories from NAS --------------------------
+
+if [[ "$configure_directories" == "y" || "$configure_directories" == "Y" ]]; then
+    ./configure_directories.sh "$smb_username" "$smb_password"
+else
+    echo "Configuring directories to SMB shares setup skipped."
+    error_messages+="WARNING: Configuring directories to SMB shares setup skipped.\n"
+fi
+
+
+# -------------------------- Icon/Folder Theme --------------------------
+echo "-------------------------- Install PPAs --------------------------"
+# Install papirus PPA, configure folders and icons
+
+ppa_name="ppa:papirus/papirus"
+if (! ls /etc/apt/sources.list.d | grep -q "papirus"); then
+    # Try to add the Papirus PPA
+    if sudo add-apt-repository -y "$ppa_name"; then
+        echo "Added PPA $ppa_name"
+
+        # Install Papirus icon theme and folders
+        sudo apt update
+        sudo apt install -y papirus-icon-theme papirus-folders
+
+        # Configure Papirus icon theme settings
+        gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+        papirus-folders -C paleorange
+    else
+        echo "ERROR: adding PPA $ppa_name"
+        error_messages+="ERROR adding PPA $ppa_name\n"
+        # You can choose to exit the script or handle the error in some other way
+        # exit 1
+    fi
+else
+    printf "$ppa_name already installed.\n"
+
+    # Configure Papirus icon theme settings
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+    papirus-folders -C paleorange
+fi
+
+# -------------------------- Install Software --------------------------
+echo "-------------------------- Install Software --------------------------"
 sudo apt install -y --ignore-missing \
 steam \
 lutris \
@@ -53,11 +94,7 @@ neofetch \
 ibus-mozc \
 code \
 lm-sensors
-# sysmontask \
-# xclip \
 
-
-# OBSOLETE: # "sudo -u $SUDO_USER" is needed to run the commands outside of sudo (normal user), required for flatpak installation if script was run as sudo
 flatpak install flathub -y \
 com.discordapp.Discord \
 com.spotify.Client \
@@ -75,96 +112,102 @@ com.github.tchx84.Flatseal \
 org.pulseaudio.pavucontrol \
 org.chromium.Chromium \
 io.github.aandrew_me.ytdn \
-org.gnome.gitlab.YaLTeR.Identity
-# com.visualstudio.code \ # No longer want flatpak, use official deb.
-# org.deluge_torrent.deluge \
-# us.zoom.Zoom \ # No longer used.
-# org.videolan.VLC \ # Use mpv instead
-
-# firefox "lutris:league-of-legends-standard-launch-help" & disown
-# firefox https://addons.mozilla.org/firefox/downloads/file/3807401/bitwarden_free_password_manager-1.51.1-an+fx.xpi & disown
-
-#add pip modules
-# development on discord bot has currently ceased, libraries not needed.
-# sudo apt install python3-pip -y
-# pip_packages='discord.py[voice] youtube-dl'
-# sudo python3 -m pip install -U $pip_packages
+org.gnome.gitlab.YaLTeR.Identity \
+io.missioncenter.MissionCenter
 
 
-################## customizations ################## 
+# -------------------------- Run Program Configurations --------------------------
+./configure_flameshot.sh && echo "Flameshot configuration succesful." || error_messages+="ERROR: Flameshot configuration failed.\n"
+./configure_vscode.sh && echo "VSCode configuration succesful." || error_messages+="ERROR: VSCode configuration failed.\n"
+./configure_firefox.sh && echo "Firefox configuration succesful." || error_messages+="ERROR: Firefox configuration failed.\n"
+echo "-----------------------------------------------"
+echo "Program configurations complete."
+
+# -------------------------- Bash Aliases --------------------------
+
 # WARNING: this will overwrite any existing .bash_aliases file!
 echo "alias upup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove && flatpak update -y'" | sudo tee ~/.bash_aliases
-# echo "alias minecraft='clear && cd ~/Minecraft\ Server/ && ./start.sh'" | sudo tee -a ~/.bash_aliases # No longer hosted on this machine.
-# echo "alias botbot='clear && cd ~/Gits/BotBot/ && python3 bot.py'" | sudo tee -a ~/.bash_aliases # No longer hosted on this machine.
-# echo "alias yt-video=\"youtube-dl --ignore-errors --verbose -f 'bestvideo+bestaudio' --output '%(title)s.%(ext)s'\"" | sudo tee -a ~/.bash_aliases
-# echo "alias yt-audio=\"youtube-dl --ignore-errors --verbose --extract-audio --audio-format mp3 --audio-quality 0 --output '%(title)s.%(ext)s'\"" | sudo tee -a ~/.bash_aliases
+source ~/.bash_aliases #load aliases file to be used immediately
+echo "Bash aliases updated."
 
-source .bash_aliases #load aliases file to be used immediately
 
-#Change device name
-# device_name="box"
-sudo hostnamectl set-hostname --static $device_name
+# -------------------------- Configure Gnome settings --------------------------
+echo "-------------------------- Configure Gnome --------------------------"
 
+# Set Favorites in Dock
+gsettings set org.gnome.shell favorite-apps "['pop-cosmic-launcher.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop', \
+'com.discordapp.Discord.desktop', 'com.spotify.Client.desktop', 'steam.desktop', 'code.desktop', 'com.slack.Slack.desktop', 'pop-cosmic-applications.desktop']"
+# Gnome DE settings
 gsettings set org.gnome.desktop.session idle-delay 900 #set screen off time to 15 minutes
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 gsettings set org.gnome.desktop.calendar show-weekdate true
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'mozc-jp')]" #add Japanese keyboard
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+# Nautilus settings
+gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'always'
+gsettings set org.gnome.nautilus.preferences recursive-search 'always'
+gsettings set org.gnome.nautilus.preferences default-folder-viewer 'icon-view'
+gsettings set org.gnome.nautilus.preferences open-folder-on-dnd-hover false
+gsettings set org.gnome.nautilus.preferences show-directory-item-counts 'always'
+
+echo "Gnome Settings updated."
 
 
-git config --global user.name "Steven Gutierrez"
-git config --global user.email "steven.s.gutier@gmail.com"
+# -------------------------- Configure Displays --------------------------
+echo "-------------------------- Configure Displays --------------------------"
 
-papirus-folders -C paleorange
-flameshot config --autostart true --trayicon false --maincolor \#4287f5
-#~/.config/flameshot/flameshot.ini
-#config file still needs modification to avoid notification popup. No CLI config available.
+# Set the maximum refresh rate for all connected displays
+xrandr --listmonitors | awk '{print $4}' | while read -r display; do
+    mode="$(xrandr | grep "$display" -A 1 | grep -oP '\d{3,}x\d{3,}')"
+    xrandr --output "$display" --mode "$mode"
+done
 
-#### Favorite Apps
-gsettings set org.gnome.shell favorite-apps "['pop-cosmic-launcher.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop', \
-'com.discordapp.Discord.desktop', 'com.spotify.Client.desktop', 'steam.desktop', 'code.desktop', 'com.slack.Slack.desktop', 'pop-cosmic-applications.desktop']"
-
-
-
-printf "\nSettings updated.\n"
-
-############## SSH KEY SETUP ##############
-if [[ $unattended != y* ]]
-then
-    echo "Generate SSH key? y/n"
-    read generate_ssh_bool
+# Enable wayland by commenting out the force disable
+if grep -q '^WaylandEnable=false' /etc/gdm3/custom.conf; then
+    # Comment out the line using sed and create a backup
+    sudo sed -i.bak 's/^WaylandEnable=false/#WaylandEnable=false/' /etc/gdm3/custom.conf
+    echo "Wayland unlocked, please select from gear icon on login screen."
+else
+    echo "ERROR: Could not find WaylandEnable setting in /etc/gdm3/custom.conf."
+    error_messages+="ERROR: Could not find WaylandEnable setting in /etc/gdm3/custom.conf."
 fi
 
-if [[ $generate_ssh_bool = y* || $unattended = y* ]]
+
+# -------------------------- SSH KEY SETUP --------------------------
+echo "-------------------------- SSH KEY SETUP --------------------------"
+
+git config --global user.name "$gitname"
+git config --global user.email "$git_email"
+git config --global init.defaultBranch main
+
+if [[ $generate_ssh = "y"* ]]
 then
-    printf "\n Generating SSH key...\n"
+    echo "Generating SSH key..."
     # -N for empty passphrase, -C for comment
     generation_date=`date +%b ``date +%Y`
-    ssh-keygen -t ed25519 -N "" -f ~/.ssh/"${device_name}_${generation_date}" -C "steven.s.gutier@gmail.com"
-    # ssh-keygen -t ed25519 -N "" -f ~/.ssh/github_key -C "steven.s.gutier@gmail.com"
+    ssh-keygen -t ed25519 -N "" -f ~/.ssh/"${device_name}_${generation_date}" -C "$git_email"
     eval "$(ssh-agent -s)"
     ssh-add ~/.ssh/"${device_name}_${generation_date}"
-    # No longer installing xclip
-    # xclip -selection clipboard < ~/.ssh/github_key.pub 
-    # printf "\nSSH Pub Key copied to clipboard.\n"
+    cat ~/.ssh/"${device_name}_${generation_date}.pub"
 else
-    printf "Skipping SSH key.\n"
+    echo "Skipping SSH key."
 fi
 
+
+# -------------------------- End --------------------------
+
 duration=( $SECONDS - start )
-printf "Setup complete. Runtime $duration seconds\n"
+echo "-----------------------------------------------"
+echo "Setup complete. Runtime $duration seconds"
+
+# Print all accumulated error messages at the end
+if [ -n "$error_messages" ]; then
+    printf "Errors occurred:\n$error_messages"
+else
+    echo "No errors."
+fi
 
 
-
-#Notes:
-#input is taken with "read foo"
-
-#Todo:
-#change mount points of attached drives to identify by label
-#create symlinks for folders on Koi drive to home
-#set refresh rates of monitors to highest
-#add custom keyboard shortcuts (printscrn for "flameshot gui")
-#add try catch for adding PPAs (prevents breakage on OS version update)
-#gnome files/nautilus preferences, always show thumbnails, set all performance options to All 
+#(Require Testing):
+#set refresh rates of monitors to highest via xrandr

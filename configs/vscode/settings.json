@@ -1,0 +1,23 @@
+{
+    "terminal.integrated.scrollback": 10000,
+    "explorer.autoReveal": "focusNoScroll",
+    "diffEditor.ignoreTrimWhitespace": true,
+    "editor.bracketPairColorization.enabled" : true,
+    "editor.autoClosingQuotes": "always",
+    "editor.fontSize": 14,
+    "editor.tabSize": "4",
+    "editor.rulers": [
+        {
+            "column": 80,
+            "color": "#42da8621"
+        },
+        {
+            "column": 100,
+            "color": "#bec4651a"
+        },
+        {
+            "column": 120,
+            "color": "#f52d0a27"
+        },
+    ]
+}
