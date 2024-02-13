@@ -11,24 +11,40 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-# Define the SMB server and share
-smb_server="vault.local"
-smb_share="home"
-smb_mount_point="/mnt/vault"
-
 # Extract username and password from command-line arguments
 username="$1"
 password="$2"
 
 sudo apt install -y --ignore-missing cifs-utils
 
+# Define the SMB server and share for my home directory
+home_smb_server="vault.local"
+home_smb_share="home"
+home_smb_mount_point="/mnt/vault/home"
+
 # Mount the SMB share if not already mounted
-if ! mountpoint -q "$smb_mount_point"; then
-    sudo mkdir -p "$smb_mount_point"
-    sudo mount -t cifs -o username="$username",password="$password" "//$smb_server/$smb_share" "$smb_mount_point"
+if ! mountpoint -q "$home_smb_mount_point"; then
+    sudo mkdir -p "$home_smb_mount_point"
+    sudo mount -t cifs -o username="$username",password="$password" "//$home_smb_server/$home_smb_share" "$home_smb_mount_point"
     # Add an entry to /etc/fstab for automatic mounting on boot
-    echo "//$smb_server/$smb_share $smb_mount_point cifs username=$username,password=$password,uid=$(id -u),gid=$(id -g),file_mode=0777,dir_mode=0777 0 0" | sudo tee -a /etc/fstab
+    echo "//$home_smb_server/$home_smb_share $home_smb_mount_point cifs username=$username,password=$password,uid=$(id -u),gid=$(id -g),file_mode=0777,dir_mode=0777 0 0" | sudo tee -a /etc/fstab
 fi
+
+# Define the SMB server and share for my photos
+photography_smb_server="vault.local"
+photography_smb_share="photography"
+photography_smb_mount_point="/mnt/vault/photography"
+
+# Mount the SMB share if not already mounted
+if ! mountpoint -q "$photography_smb_mount_point"; then
+    sudo mkdir -p "$photography_smb_mount_point"
+    sudo mount -t cifs -o username="$username",password="$password" "//$photography_smb_server/$photography_smb_share" "$photography_smb_mount_point"
+    # Add an entry to /etc/fstab for automatic mounting on boot
+    echo "//$photography_smb_server/$photography_smb_share $photography_smb_mount_point cifs username=$username,password=$password,uid=$(id -u),gid=$(id -g),file_mode=0777,dir_mode=0777 0 0" | sudo tee -a /etc/fstab
+fi
+
+# load the new mount points
+mount -a
 
 # Note: Some folders like desktop and downloads are kept local to serve as rapid access "scratch" areas
 read -r -d '' new_content <<EOF
@@ -43,10 +59,10 @@ XDG_DESKTOP_DIR="$HOME/Desktop"
 XDG_DOWNLOAD_DIR="$HOME/Downloads"
 XDG_TEMPLATES_DIR="$HOME/Templates"
 XDG_PUBLICSHARE_DIR="$HOME/Public"
-XDG_DOCUMENTS_DIR="$smb_mount_point/Documents"
-XDG_MUSIC_DIR="$smb_mount_point/Music"
-XDG_PICTURES_DIR="$smb_mount_point/Pictures"
-XDG_VIDEOS_DIR="$smb_mount_point/Videos"
+XDG_DOCUMENTS_DIR="$home_smb_mount_point/Documents"
+XDG_MUSIC_DIR="$home_smb_mount_point/Music"
+XDG_PICTURES_DIR="$home_smb_mount_point/Pictures"
+XDG_VIDEOS_DIR="$home_smb_mount_point/Videos"
 EOF
 
 # Make a backup and overwrite the user-dirs.dirs file with the new content
