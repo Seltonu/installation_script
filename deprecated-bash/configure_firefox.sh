@@ -21,5 +21,4 @@ else
     exit 1
 fi
 
-
 printf "Firefox configuration complete.\n"
