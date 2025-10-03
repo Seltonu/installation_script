@@ -11,7 +11,7 @@ warning_messages = []
 
 # -------------------------- Run Functions --------------------------
 
-# used for calling a bash command and printing/returning outputs 
+# Used for calling a bash command and printing/returning outputs
 def run_command(command, print_stdout=True):
     global error_messages
     
@@ -29,7 +29,7 @@ def run_command(command, print_stdout=True):
     
     if process.returncode != 0 and stderr:
         error_messages.append(str(stderr))
-    
+
     result = {
         "returncode": process.returncode,
         "stdout": process.communicate()[0],
@@ -71,9 +71,15 @@ def is_gnome_session() -> bool:
     else:
         return False
 
-def is_package_installed(package_name) -> bool:
-    returncode = run_command(f"dpkg -l | grep -qw {package_name}")["returncode"]
-    if (returncode == 0):
+def is_package_installed(package_name: str) -> bool:
+    # Check if it's a dpkg package
+    returncode = run_command(f"dpkg -l | grep -qw {package_name}", print_stdout=False)["returncode"]
+    if returncode == 0:
         return True
-    else:
-        return False
+
+    # Check if it's a flatpak package
+    returncode = run_command(f"flatpak list | grep -qw {package_name}", print_stdout=False)["returncode"]
+    if returncode == 0:
+        return True
+
+    return False
