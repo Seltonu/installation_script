@@ -19,8 +19,12 @@ if (not firefox_settings_path):
 
 copy_and_overwrite(firefox_settings_file, firefox_settings_path[0]) #note array access for glob
 
-warn_msg = "Notice: Please note that Firefox default zoom % is not currently automatically configured, \
-    this can be changed easily via about:preferences."
-print(f"-{warn_msg}")
+# Open Firefox to set default zoom and search engine
+print("-Opening Firefox preferences...")
+print(" Please manually set:")
+print("   1. Default zoom to 133% (scroll down to 'Zoom' section)")
+print("   2. Default search engine to DuckDuckGo (in the 'Search' tab)")
+run_gui_command("firefox about:preferences")
+
+warn_msg = "Manual Firefox configuration required: Set default zoom to 133% and search engine to DuckDuckGo"
 warning_messages.append(warn_msg)
-# run_command("firefox about:preferences")

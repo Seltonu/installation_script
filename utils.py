@@ -14,9 +14,9 @@ warning_messages = []
 # Used for calling a bash command and printing/returning outputs
 def run_command(command, print_stdout=True):
     global error_messages
-    
+
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    
+
     # read out stdout line by line in real time
     while True and print_stdout:
         output = process.stdout.readline()
@@ -26,7 +26,7 @@ def run_command(command, print_stdout=True):
             print(output.strip())
     # collect stderr at end
     stderr = process.communicate()[1]
-    
+
     if process.returncode != 0 and stderr:
         error_messages.append(str(stderr))
 
@@ -37,10 +37,20 @@ def run_command(command, print_stdout=True):
     }
     return result
 
+# Used for launching GUI applications without blocking the script
+def run_gui_command(command):
+    """
+    Launch a GUI application in the background without blocking.
+    Args:
+        command: Command string (e.g., "firefox about:preferences")
+    """
+    subprocess.Popen(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
 def run_script(script_path, args=""):
     command = f"./{script_path} {args}"
     result = run_command(command)
     return result
+
 
 # -------------------------- File Functions --------------------------
 
