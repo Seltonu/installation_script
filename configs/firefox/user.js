@@ -21,32 +21,15 @@ The user.js should be stored in the Firefox profile folder, located in
     ~/.mozilla/firefox/<rand_string>.default-release/
 */
 
-
-/*
-+--------------------
-    Performance
-+--------------------
-*/
-
-/*
-force enable hardware acceleration (experimental)
-*/
-//user_pref("layers.acceleration.force-enabled", true);
-/*
-force enable webrender engine (experimental)
-*/
-//user_pref("gfx.webrender.all", true);
-/*
-set engine FPS to 170 (my fastest monitor) manually
-*/
-user_pref("layout.frame_rate", 170);
-user_pref("middlemouse.paste", false);
-
 /*
 +--------------------
     Customization
 +--------------------
 */
+
+// user_pref("layout.frame_rate", 170);
+user_pref("middlemouse.paste", false);
+user_prefs("general.autoScroll", true); // Middle click brings up old style autoscroller
 
 /*
 Toolbar customization
@@ -61,7 +44,7 @@ order:
 amazon, mail, facebook, bsky, instagram, reddit, youtube, notes,
 phoronix, chatgpt, lichess, nas, plex, vue, immich, ynab, proton
 */
-user_pref("browser.newtabpage.pinned", '[{"url":"https://amazon.com/","label":"amazon","baseDomain":"amazon.com"},{"url":"https://mail.google.com/mail/u/0/#inbox","label":"mail"},{"url":"https://www.facebook.com/","label":"facebook","baseDomain":"facebook.com"},{"url":"https://bsky.app/","label":"bsky","baseDomain":"bsky.app"},{"url":"https://www.instagram.com/","label":"instagram","baseDomain":"instagram.com"},{"url":"https://www.reddit.com/","label":"reddit","baseDomain":"reddit.com"},{"url":"https://www.youtube.com/","label":"youtube","baseDomain":"youtube.com"},{"url":"https://hevy.com/","label":"hevy","baseDomain":"hevy.com"},{"url":"https://www.phoronix.com/scan.php?page=home","baseDomain":"phoronix.com"},{"url":"https://claude.ai/new","label":"claude","baseDomain":"claude.ai"},{"url":"http://lichess.org","label":"lichess","baseDomain":"lichess.org"},{"url":"http://192.168.1.15","label":"nas","baseDomain":"192.168.1.15"},{"url":"https://app.plex.tv/desktop/#!/","label":"plex","baseDomain":"app.plex.tv"},{"url":"http://192.168.1.15:8080","label":"vue","baseDomain":"192.168.1.15"},{"url":"http://192.168.1.15:8089/photos","label":"immich","baseDomain":"192.168.1.15"},{"url":"https://app.monarchmoney.com/dashboard","label":"monarch","baseDomain":"monarchmoney.com"},{"url":"https://www.protondb.com/","label":"proton","baseDomain":"protondb.com"}]');
+user_pref("browser.newtabpage.pinned", '[{"url":"https://amazon.com/","label":"amazon","baseDomain":"amazon.com"},{"url":"https://mail.google.com/mail/u/0/#inbox","label":"mail"},{"url":"https://www.facebook.com/","label":"facebook","baseDomain":"facebook.com"},{"url":"https://bsky.app/","label":"bsky","baseDomain":"bsky.app"},{"url":"https://www.instagram.com/","label":"instagram","baseDomain":"instagram.com"},{"url":"https://www.reddit.com/","label":"reddit","baseDomain":"reddit.com"},{"url":"https://www.youtube.com/","label":"youtube","baseDomain":"youtube.com"},{"url":"https://hevy.com/","label":"hevy","baseDomain":"hevy.com"},{"url":"https://www.phoronix.com/scan.php?page=home","baseDomain":"phoronix.com"},{"url":"https://claude.ai/new","label":"claude","baseDomain":"claude.ai"},{"url":"http://lichess.org","label":"lichess","baseDomain":"lichess.org"},{"url":"http://192.168.1.15","label":"nas","baseDomain":"192.168.1.15"},{"url":"https://app.plex.tv/desktop/#!/","label":"plex","baseDomain":"app.plex.tv"},{"url":"http://192.168.1.15:8080","label":"vue","baseDomain":"192.168.1.15"},{"url":"http://192.168.1.15:8089/photos","label":"immich","baseDomain":"192.168.1.15"},{"url":"https://app.monarch.com/dashboard","label":"monarch","baseDomain":"monarchmoney.com"},{"url":"https://www.protondb.com/","label":"proton","baseDomain":"protondb.com"}]');
 
-//when creating new/duplicate tab, open it beside current not at end of tab row
+// When creating new/duplicate tab, open it beside current not at end of tab row
 user_pref("browser.tabs.insertAfterCurrent", true)

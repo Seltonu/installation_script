@@ -72,6 +72,28 @@ def copy_and_overwrite(local_file, device_path) -> bool:
     print("-Settings succesfully copied")
     return True
 
+def delete_file(file_path) -> bool:
+    """
+    Delete a file if it exists.
+    Args:
+        file_path: Path to the file to delete
+    Returns:
+        True if file was deleted or didn't exist, False if error occurred
+    """
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"-Deleted {file_path}")
+            return True
+        else:
+            print(f"-File not found: {file_path}")
+            return True
+    except Exception as e:
+        err_msg = f"Failed to delete {file_path}. Error: {e}"
+        error_messages.append(err_msg)
+        print("Error: " + err_msg)
+        return False
+
 
 # -------------------------- Misc. Functions --------------------------
 
