@@ -107,6 +107,7 @@ with open(os.path.expanduser("~/.bash_aliases"), 'w') as bash_aliases:
     bash_aliases.write("alias upup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove && flatpak update -y'\n")
     bash_aliases.write("alias upups='sudo apt update && sudo apt upgrade -y && sudo apt autoremove && flatpak update -y && shutdown now'\n")
     bash_aliases.write("alias upupr='sudo apt update && sudo apt upgrade -y && sudo apt autoremove && flatpak update -y && sudo reboot now'\n")
+    bash_aliases.write("alias apt-fix='sudo dpkg --configure -a'\n")
 run_command("source ~/.bash_aliases") # Make the command useable without needing to reboot
 print("-Bash aliases file updated")
 
