@@ -2,6 +2,8 @@ from utils import *
 import glob
 import time
 import os
+import json
+import subprocess
 
 # -------------------------- Configure Firefox --------------------------
 # Overwrites the Firefox user_prefs file with the local copy.
@@ -23,11 +25,40 @@ run_command("sudo pkill firefox"); # Necessary for user.js to be applied
 
 copy_and_overwrite(firefox_settings_file, firefox_settings_path[0]) #note array access for glob
 
-# Open Firefox to set default zoom and search engine
-print("-Opening Firefox preferences...")
-print(" Please manually set:")
-print("   1. Default zoom to 133% (scroll down to 'Zoom' section)")
-print("   2. Default search engine to DuckDuckGo (in the 'Search' tab)")
+# Set default search engine to DuckDuckGo via enterprise policy
+print("-Setting default search engine to DuckDuckGo...")
+policies_path = "/usr/lib/firefox/distribution/policies.json"
+try:
+    with open(policies_path, "r") as f:
+        policies = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    policies = {"policies": {}}
+policies["policies"]["SearchEngines"] = {"Default": "DuckDuckGo"}
+run_command(f"sudo tee {policies_path} > /dev/null << 'EOF'\n{json.dumps(policies, indent=2)}\nEOF")
+
+# Set default zoom to 130%
+print("-Setting default zoom to 133%...")
+profile_dir = firefox_settings_path[0]
+content_prefs_db = f"{profile_dir}/content-prefs.sqlite"
+if not os.path.exists(content_prefs_db):
+    print("-content-prefs.sqlite not found, launching Firefox briefly to generate it...")
+    run_gui_command("firefox")
+    time.sleep(3)
+    run_command("pkill firefox")
+    time.sleep(1)
+
+if os.path.exists(content_prefs_db):
+    subprocess.run(["sqlite3", content_prefs_db,
+        "INSERT OR IGNORE INTO settings(name) VALUES('browser.content.full-zoom');"
+        "INSERT OR REPLACE INTO prefs(groupID, settingID, value) "
+        "VALUES(NULL, (SELECT id FROM settings WHERE name = 'browser.content.full-zoom'), '1.33');"
+    ], check=True)
+    print("-Default zoom set to 133%")
+else:
+    print("-WARNING: content-prefs.sqlite not found, zoom not set")
+    warning_messages.append("Firefox default zoom not set (content-prefs.sqlite missing)")
+
+# Open Firefox to apply user.js settings
 run_gui_command("firefox about:preferences")
 
 # Wait 500ms for Firefox to load the user.js file, then delete it
@@ -35,6 +66,3 @@ run_gui_command("firefox about:preferences")
 # Which allows for overwriting preferences. (Keeping user.js would reset them on ever start)
 time.sleep(0.5)
 delete_file(f"{firefox_settings_path[0]}/user.js")
-
-warn_msg = "Manual Firefox configuration required: Set default zoom to 133% and search engine to DuckDuckGo"
-warning_messages.append(warn_msg)
