@@ -12,12 +12,31 @@ apt_packages = [
     "qemu", "spice-vdagent", "virglrenderer", "virt-manager", "virt-viewer"
 ]
 flatpak_packages = [
-    "com.discordapp.Discord", "com.spotify.Client", "org.kde.kdenlive", "org.kde.krita",
-    "org.flameshot.Flameshot", "com.slack.Slack", "io.mpv.Mpv", "com.obsproject.Studio",
-    "com.mojang.Minecraft", "org.darktable.Darktable", "com.rawtherapee.RawTherapee",
-    "org.gnome.Cheese", "com.github.tchx84.Flatseal", "org.pulseaudio.pavucontrol",
-    "org.chromium.Chromium", "io.github.aandrew_me.ytdn", "org.gnome.gitlab.YaLTeR.Identity",
-    "io.missioncenter.MissionCenter"
+    "io.github.cosmic_utils.minimon-applet", # Applet Minimon
+    "com.bambulab.BambuStudio",              # Bambu Studio
+    "com.usebottles.bottles",                # Bottles
+    "org.gnome.Cheese",                      # Cheese
+    "org.chromium.Chromium",                 # Chromium
+    "org.darktable.Darktable",               # Darktable
+    "com.discordapp.Discord",                # Discord
+    "org.flameshot.Flameshot",               # Flameshot
+    "com.github.tchx84.Flatseal",            # Flatseal
+    "org.gnome.gitlab.YaLTeR.Identity",      # Identity
+    "org.kde.kdenlive",                      # Kdenlive
+    "org.kde.krita",                         # Krita
+    "com.mojang.Minecraft",                  # Minecraft
+    "io.missioncenter.MissionCenter",        # Mission Center
+    "io.mpv.Mpv",                            # mpv
+    "com.obsproject.Studio",                 # OBS Studio
+    "md.obsidian.Obsidian",                  # Obsidian
+    "org.pulseaudio.pavucontrol",            # PulseAudio Volume Control
+    "com.rawtherapee.RawTherapee",           # RawTherapee
+    "com.slack.Slack",                       # Slack
+    "com.spotify.Client",                    # Spotify
+    "org.videolan.VLC",                      # VLC
+    "xyz.xclicker.xclicker",                # XClicker
+    "io.github.aandrew_me.ytdn",             # ytDownloader
+    "us.zoom.Zoom"                           # Zoom
 ]
 
 # -------------------------- Script Startup --------------------------
@@ -96,7 +115,10 @@ result = run_script("configure_firefox.py")
 if result["returncode"] != 0:
     error_messages.append("ERROR: Firefox configuration failed.")
 
-
+# -------------------------- Install Services --------------------------
+print("-------------------------- Installing services")
+run_command("bash ./services/wave3-audio-fix.sh")
+run_command("bash ./services/kanto-audio-fix.sh")
 
 print("--------------------------")
 print("Program configurations complete.")

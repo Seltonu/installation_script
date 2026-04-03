@@ -27,6 +27,10 @@ uninstall() {
 }
 
 install() {
+    if ! lsusb -d 8888:1717 &>/dev/null; then
+        echo "Kanto ORA not detected, skipping."
+        exit 0
+    fi
     echo "Installing Kanto ORA audio fix..."
     mkdir -p "$(dirname "$SCRIPT")" "$(dirname "$SERVICE")"
 

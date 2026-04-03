@@ -26,6 +26,10 @@ uninstall() {
 }
 
 install() {
+    if ! lsusb -d 0fd9:0070 &>/dev/null; then
+        echo "Elgato Wave:3 not detected, skipping."
+        exit 0
+    fi
     echo "Installing Elgato Wave:3 audio fix..."
     mkdir -p "$(dirname "$SCRIPT")" "$(dirname "$SERVICE")"
 
