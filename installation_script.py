@@ -8,7 +8,7 @@ ppas_to_install = ["ppa:papirus/papirus"]
 
 apt_packages = [
     "steam", "lutris",# "papirus-icon-theme", "papirus-folders",
-    "ffmpeg", "neofetch", "code", "lm-sensors", "tree", "exfat-fuse",
+    "ffmpeg", "neofetch", "lm-sensors", "tree", "exfat-fuse", # "code",
     "qemu", "spice-vdagent", "virglrenderer", "virt-manager", "virt-viewer"
 ]
 flatpak_packages = [
@@ -88,9 +88,9 @@ result = run_script("configure_flameshot.py")
 if result["returncode"] != 0:
     error_messages.append("ERROR: Flameshot configuration failed.")
 
-result = run_script("configure_vscode.py")
-if result["returncode"] != 0:
-    error_messages.append("ERROR: VSCode configuration failed.")
+# result = run_script("configure_vscode.py")
+# if result["returncode"] != 0:
+#     error_messages.append("ERROR: VSCode configuration failed.")
 
 result = run_script("configure_firefox.py")
 if result["returncode"] != 0:
