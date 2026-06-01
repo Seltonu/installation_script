@@ -115,6 +115,10 @@ result = run_script("configure_firefox.py")
 if result["returncode"] != 0:
     error_messages.append("ERROR: Firefox configuration failed.")
 
+result = run_script("configure_scripts.py")
+if result["returncode"] != 0:
+    error_messages.append("ERROR: Custom scripts setup failed.")
+
 # -------------------------- Install Services --------------------------
 print("-------------------------- Installing services")
 run_command("bash ./services/wave3-audio-fix.sh")
