@@ -21,7 +21,15 @@ if (not firefox_settings_path):
     error_messages.append(err_msg)
     exit(1)
 
-run_command("sudo pkill firefox"); # Necessary for user.js to be applied
+# Kill Firefox and wait for it to fully exit (sqlite lock needs to release)
+run_command("sudo pkill firefox")
+for _ in range(100):  # poll up to ~10s
+    if subprocess.run(["pgrep", "firefox"], capture_output=True).returncode != 0:
+        break
+    time.sleep(0.1)
+else:
+    run_command("sudo pkill -9 firefox")
+    time.sleep(1)
 
 copy_and_overwrite(firefox_settings_file, firefox_settings_path[0]) #note array access for glob
 
