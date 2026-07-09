@@ -1093,7 +1093,7 @@ def main():
 
     try:
         _send()
-    except (ConnectionRefusedError, OSError):
+    except Exception:
         if PRINTER_IP is None and PRINTER_IP_CACHE.exists():
             print("label: printer connection failed, rediscovering...", file=sys.stderr)
             PRINTER_IP_CACHE.unlink()
