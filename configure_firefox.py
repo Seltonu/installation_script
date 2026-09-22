@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from utils import *
 import glob
 import time

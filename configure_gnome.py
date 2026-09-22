@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from utils import *
 
 print("-------------------------- Configuring Gnome")
@@ -30,5 +31,6 @@ if (is_gnome_session()):
     for setting, value in gnome_settings:
         run_command(f"gsettings set {setting} {value}")
 else:
+    # Not a warning -- COSMIC is the expected desktop. This block only exists so
+    # the script still does the right thing on a GNOME machine.
     print("-Skipping Gnome configuration, Gnome is not the current DE.")
-    warning_messages.append("Skipped Gnome configuration. Gnome is not the current DE.")
