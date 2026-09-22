@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Install custom user CLIs from ./scripts/ into ~/.local/bin/.
 
-Each scripts/<name>.py becomes the command `<name>`. Files starting with
-`_` are skipped. Re-running overwrites — safe and idempotent.
+Two layouts are supported, both producing the command `<name>`:
+    scripts/<name>.py           loose single-file script
+    scripts/<name>/<name>.py    script with its own docs/assets alongside it
+
+Files and directories starting with `_` are skipped. Re-running overwrites
+— safe and idempotent.
 """
 from utils import *
 import shutil
@@ -23,11 +27,25 @@ def install_scripts() -> int:
 
     TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
-    installed = []
+    # scripts/<name>.py plus scripts/<name>/<name>.py, deduped by command name
+    sources = {}
     for src in sorted(SCRIPTS_DIR.glob("*.py")):
-        if src.name.startswith("_"):
+        sources.setdefault(src.stem, src)
+    for subdir in sorted(p for p in SCRIPTS_DIR.iterdir()
+                         if p.is_dir() and not p.name.startswith((".", "_"))):
+        src = subdir / f"{subdir.name}.py"
+        if src.is_file():
+            sources.setdefault(subdir.name, src)
+        else:
+            msg = f"-Skipping {subdir.name}/: expected {src.name} inside it"
+            print(msg)
+            warning_messages.append(msg)
+
+    installed = []
+    for name, src in sorted(sources.items()):
+        if name.startswith("_"):
             continue
-        dest = TARGET_DIR / src.stem
+        dest = TARGET_DIR / name
         shutil.copy(src, dest)
         dest.chmod(dest.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         installed.append(dest.name)

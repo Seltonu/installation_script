@@ -48,13 +48,21 @@ from pathlib import Path
 # below resolve there. To rebuild from scratch: rm -rf ~/.venvs/label
 _VENV         = Path.home() / ".venvs" / "label"
 _VENV_PY      = _VENV / "bin" / "python3"
+# site-packages lives under the Python minor version, so a distro upgrade
+# orphans the venv silently: bin/python3 still resolves (it points at
+# /usr/bin/python3, which the upgrade replaced) but the libraries are still
+# under the old version's directory. Check for both before trusting it.
+_VENV_LIB     = _VENV / "lib" / f"python{sys.version_info[0]}.{sys.version_info[1]}"
 _REQUIREMENTS = ("brother_ql_inventree", "Pillow", "zeroconf")
 
 if sys.executable != str(_VENV_PY):
-    if not _VENV_PY.exists():
-        print(f"label: first-run setup, creating venv at {_VENV}", file=sys.stderr)
+    if not _VENV_PY.exists() or not _VENV_LIB.is_dir():
+        action = "rebuilding stale" if _VENV.exists() else "first-run setup, creating"
+        print(f"label: {action} venv at {_VENV}", file=sys.stderr)
         try:
-            subprocess.check_call([sys.executable, "-m", "venv", str(_VENV)])
+            # --clear drops the previous interpreter's libraries instead of
+            # leaving them behind to shadow the new ones.
+            subprocess.check_call([sys.executable, "-m", "venv", "--clear", str(_VENV)])
         except subprocess.CalledProcessError:
             sys.exit("label: failed to create venv. "
                      "Install the venv module: sudo apt install python3-venv")
