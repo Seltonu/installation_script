@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from utils import *
 import configparser
 
@@ -7,7 +8,9 @@ import configparser
 print("-------------------------- Configuring Flameshot")
 
 if (not is_package_installed("org.flameshot.Flameshot")):
-    run_command("sudo flatpak install flathub -y org.flameshot.Flameshot")
+    # User-scoped: Pop!_OS has no system-level flatpak remotes, so this must
+    # not run under sudo.
+    run_command("flatpak install --user flathub -y org.flameshot.Flameshot")
 
 # Flameshot exposes some settings configuration via command line, set those here
 run_command("flatpak run org.flameshot.Flameshot config --autostart true --trayicon false --maincolor '#4287f5'")
@@ -16,9 +19,16 @@ run_command("flatpak run org.flameshot.Flameshot config --autostart true --trayi
 # and must be modified in the config file directly. Config file
 # is copied/overwritten with the local copy
 
-flameshot_settings_path = f"{USER_HOME}/.config/flameshot/flameshot.ini"
+# The flatpak is not granted xdg-config/flameshot, so it reads its ini from
+# inside the sandbox -- writing to ~/.config/flameshot has no effect on it.
+# The native path is only written if a non-flatpak Flameshot is also present.
 flameshot_settings_file = "./configs/flameshot/flameshot.ini"
-copy_and_overwrite(flameshot_settings_file, flameshot_settings_path)
+flatpak_settings_path = f"{USER_HOME}/.var/app/org.flameshot.Flameshot/config/flameshot/flameshot.ini"
+native_settings_path  = f"{USER_HOME}/.config/flameshot/flameshot.ini"
+
+copy_and_overwrite(flameshot_settings_file, flatpak_settings_path)
+if (os.path.isdir(os.path.dirname(native_settings_path))):
+    copy_and_overwrite(flameshot_settings_file, native_settings_path)
 
 if (is_gnome_session()):
     # Set custom flameshot keybind for Gnome
