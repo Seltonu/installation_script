@@ -1,0 +1,31 @@
+(
+    chart: false,
+    label: false,
+    colors: (
+        color1: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+        color2: (
+            red: 255,
+            green: 102,
+            blue: 0,
+            alpha: 255,
+        ),
+        color3: (
+            red: 255,
+            green: 255,
+            blue: 0,
+            alpha: 255,
+        ),
+        color4: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+    ),
+    variant: Read,
+)

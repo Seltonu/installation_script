@@ -1,0 +1,35 @@
+(
+    chart: true,
+    label: false,
+    adaptive: true,
+    bandwidth: 62500000,
+    unit: Some(0),
+    colors: (
+        color1: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+        color2: (
+            red: 47,
+            green: 141,
+            blue: 255,
+            alpha: 255,
+        ),
+        color3: (
+            red: 0,
+            green: 255,
+            blue: 0,
+            alpha: 255,
+        ),
+        color4: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+    ),
+    variant: Upload,
+    show_bytes: false,
+)

@@ -1,3 +1,7 @@
 test.sh
 __pycache__/
 *.pyc
+
+# Minimon keys GPU settings by hardware hash -- machine-specific, and a
+# hardware fingerprint we don't want in a public repo.
+configs/minimon/gpus

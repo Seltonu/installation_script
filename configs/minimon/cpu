@@ -1,0 +1,60 @@
+(
+    chart: true,
+    label: false,
+    kind: StackedBars,
+    colors: (
+        color1: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+        color2: (
+            red: 255,
+            green: 255,
+            blue: 255,
+            alpha: 255,
+        ),
+        color3: (
+            red: 85,
+            green: 85,
+            blue: 85,
+            alpha: 255,
+        ),
+        color4: (
+            red: 255,
+            green: 6,
+            blue: 0,
+            alpha: 255,
+        ),
+    ),
+    bar_colors: (
+        color1: (
+            red: 43,
+            green: 43,
+            blue: 43,
+            alpha: 255,
+        ),
+        color2: (
+            red: 255,
+            green: 255,
+            blue: 255,
+            alpha: 255,
+        ),
+        color3: (
+            red: 80,
+            green: 80,
+            blue: 255,
+            alpha: 255,
+        ),
+        color4: (
+            red: 255,
+            green: 6,
+            blue: 0,
+            alpha: 255,
+        ),
+    ),
+    no_decimals: false,
+    bar_width: 4,
+    bar_spacing: 1,
+)
