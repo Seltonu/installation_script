@@ -104,14 +104,21 @@ def is_gnome_session() -> bool:
         return False
 
 def is_package_installed(package_name: str) -> bool:
-    # Check if it's a dpkg package
-    returncode = run_command(f"dpkg -l | grep -qw {package_name}", print_stdout=False)["returncode"]
-    if returncode == 0:
+    """Exact-match lookup against dpkg, then flatpak.
+
+    The old `dpkg -l | grep -w <name>` form matched package *descriptions* as
+    well as names, so short names like "tree" reported false positives.
+    """
+    # 2>/dev/null: dpkg-query writes to stderr for unknown packages, and
+    # run_command treats any stderr on a non-zero exit as a script error.
+    dpkg = run_command(
+        f"dpkg-query -W -f='${{Status}}' {package_name} 2>/dev/null",
+        print_stdout=False
+    )
+    if "install ok installed" in dpkg["stdout"]:
         return True
 
-    # Check if it's a flatpak package
-    returncode = run_command(f"flatpak list | grep -qw {package_name}", print_stdout=False)["returncode"]
-    if returncode == 0:
-        return True
-
-    return False
+    flatpak = run_command(
+        "flatpak list --app --columns=application", print_stdout=False
+    )
+    return package_name in flatpak["stdout"].split()
